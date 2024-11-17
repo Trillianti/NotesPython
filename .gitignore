@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 user_id.txt
 auth.txt
+notes.json
