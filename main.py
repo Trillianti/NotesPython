@@ -31,7 +31,6 @@ class NotesApp:
         self.load_notes()
 
     def create_widgets(self):
-        # Заголовок
         header_frame = tk.Frame(self.root, bg="#1d1e26")
         header_frame.pack(fill=tk.X, pady=10)
 
@@ -40,13 +39,11 @@ class NotesApp:
         )
         self.header_label.pack(side=tk.LEFT, padx=20)
 
-        # Поле пошуку
         self.search_var = tk.StringVar()
         self.search_var.trace("w", lambda *args: self.update_search_query())
         self.search_entry = ttk.Entry(header_frame, textvariable=self.search_var, font=("Helvetica", 14))
         self.search_entry.pack(side=tk.RIGHT, padx=20, pady=5)
 
-        # Область відображення нотаток
         notes_frame = tk.Frame(self.root, bg="#1d1e26")
         notes_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=0)  # Додаємо відступи зліва і справа
 
@@ -60,7 +57,6 @@ class NotesApp:
             "<Configure>", lambda e: self.notes_canvas.configure(scrollregion=self.notes_canvas.bbox("all"))
         )
 
-        # Прокрутка колесом миші
         system_platform = platform.system()
         if system_platform == 'Windows':
             self.notes_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
@@ -70,7 +66,6 @@ class NotesApp:
             self.notes_canvas.bind_all("<Button-4>", self._on_mousewheel_linux)
             self.notes_canvas.bind_all("<Button-5>", self._on_mousewheel_linux)
 
-        # Кнопка додавання нотатки
         add_button = tk.Button(
             self.root,
             text="+",
@@ -117,16 +112,13 @@ class NotesApp:
         last30_days_notes = []
         monthly_notes = {}
 
-        # Фильтруем заметки по поисковому запросу и обрабатываем пустые заголовки
         filtered_notes = [
             note for note in self.notes
             if self.search_query in (note["header"] or "Без заголовку").lower()
         ]
 
-        # Сортируем заметки от новых к старым
         filtered_notes = sorted(filtered_notes, key=lambda x: parse_iso_datetime(x["created_at"]), reverse=True)
 
-        # Категоризация заметок
         for note in filtered_notes:
             note_date = parse_iso_datetime(note["created_at"])
 
@@ -172,7 +164,6 @@ class NotesApp:
                 self.create_note_item(note)
 
     def create_note_item(self, note):
-        # Обрабатываем заголовок: если пустой, отображаем как "Без заголовку"
         actual_header = (note["header"][:20] + "...") if len(note["header"]) > 20 else note["header"] or "Без заголовку"
 
         frame = tk.Frame(self.notes_frame, bg="#2c2f38", pady=5, padx=5)
